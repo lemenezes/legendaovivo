@@ -422,9 +422,6 @@ export const actions = {
     }
 
     state.totalCaptioningSeconds += (Date.now() - lastManualStart) / 1000;
-    dispatch('donation/SHOW_DONATION_MESSAGE_IF_ELIGIBLE', null, {
-      root: true,
-    });
   },
 
   // Fast restart if possible

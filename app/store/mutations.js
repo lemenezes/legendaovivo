@@ -252,10 +252,6 @@ export default {
     });
   },
 
-  SET_DONATION_DATE: (state, { donationDate }) => {
-    state.settings.donationDate = donationDate;
-  },
-
   SOCKET_ONOPEN(state, event) {
     state.socket.isConnected = true;
   },

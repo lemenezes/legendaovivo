@@ -41,7 +41,7 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-brand mr-auto" :class="{ 'mt-3': largerLayout }">
+        <div class="navbar-brand mr-auto d-flex align-items-center" :class="{ 'mt-3': largerLayout }">
           <a href="/" class="d-flex align-items-center">
             <img
               src="/logo-solid-bg.svg"
@@ -54,6 +54,15 @@
               $t('app.webCaptioner')
             }}</span>
           </a>
+          <nuxt-link to="/captioner/settings/language">
+            <b-badge
+              variant="secondary"
+              class="ml-2"
+              style="font-size: 0.65rem; font-weight: 600; cursor: pointer;"
+            >
+              {{ localeCode }}
+            </b-badge>
+          </nuxt-link>
         </div>
 
         <!-- Do not remove this from the DOM with v-if. Currently the volume meter needs to exist in order to populate microphoneName. -->
@@ -225,6 +234,7 @@ import SettingsPopup from '../components/SettingsPopup.vue';
 import ChannelsPopup from '~/components/channels/ChannelsPopup';
 import saveToFile from '~/mixins/saveToFile';
 import dateFormat from '~/mixins/dateFormat';
+import locales from '~/mixins/data/locales';
 
 export default {
   mixins: [saveToFile, dateFormat],
@@ -283,6 +293,13 @@ export default {
       return this.$store.state.settings.channels.filter(
         (channel) => channel.on
       );
+    },
+    localeCode() {
+      const locale = this.$store.state.settings.locale.from;
+      if (!locale) return 'English (United States)';
+      
+      const localeData = locales.find(l => l.code === locale);
+      return localeData ? localeData.nameEnglish : locale;
     },
   },
   watch: {

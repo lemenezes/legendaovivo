@@ -61,7 +61,7 @@ export default ({ $store, $axios, channelId, channelParameters }) => {
     let apiPath = new URL(channelParameters.vmixAddress);
     apiPath.searchParams.append(
       'lang',
-      $store.state.settings.locale.from || 'en-US'
+      $store.state.settings.locale.from || 'pt-BR'
     );
 
     // Add line breaks if necessary

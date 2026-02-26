@@ -162,7 +162,7 @@ export default ({ $store, $axios, channelId, channelParameters }) => {
     apiPath.searchParams.append('seq', String(sequence));
     apiPath.searchParams.append(
       'lang',
-      $store.state.settings.locale.from || 'en-US'
+      $store.state.settings.locale.from || 'pt-BR'
     );
 
     try {

@@ -198,7 +198,7 @@ export default {
         supportedLanguagesAndDialects: 'idiomas e dialetos suportados',
       },
       list: {
-        'en-US': 'Inglês (Estados Unidos)',
+        // 'en-US': 'Inglês (Estados Unidos)',
         'pt-BR': 'Português (Brasil)',
       },
     },

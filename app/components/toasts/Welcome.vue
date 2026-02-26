@@ -19,8 +19,7 @@ export default {
       return !this.$store.state.captioner.transcript.interim
               && !this.$store.state.captioner.transcript.final
               && !this.$store.state.captioner.transcript.typed
-              && !this.$store.state.captioner.shouldBeOn
-              && !this.$store.state.donation.message.show;
+              && !this.$store.state.captioner.shouldBeOn;
     },
   },
 }

@@ -214,6 +214,14 @@ module.exports = {
   },
   loading: false,
   build: {
+    loaders: {
+      scss: {
+        sassOptions: {
+          quietDeps: true,
+          silenceDeprecations: ['abs-percent']
+        }
+      }
+    },
     transpile: [
       'screenfull',
       'node-fetch',

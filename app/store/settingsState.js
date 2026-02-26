@@ -27,7 +27,7 @@ export default () => {
         textColorInterim: '#ffffff',
         fontFamily: 'Cousine',
         fontVariant: 'regular',
-        textSize: '4', // em
+        textSize: '2.5', // em
         lineHeight: '1.2', // em
         letterSpacing: '0', // em
         textTransform: 'uppercase', // or "capitalize" or "initial"
@@ -66,7 +66,7 @@ export default () => {
     stabilizedThresholdMs: 0,
 
     locale: {
-      from: null,
+      from: "pt-BR",
       userDefault: null,
     },
     channels: [],
@@ -75,7 +75,6 @@ export default () => {
       action: 'lineBreak2',
     },
     alwaysAutostartOnLoad: false,
-    donationDate: null,
     exp: [],
   };
 };

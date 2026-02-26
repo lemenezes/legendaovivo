@@ -26,7 +26,7 @@
                             "alwaysAutostartOnLoad": true,
                             "locale": {
                                 "userDefault": "en-CA",
-                                "from": "en-US"
+                                "from": "pt-BR"
                             },
                             "afterNoAudio": {
                                 "seconds": 2,

@@ -49,7 +49,7 @@ export default {
         commit('SET_LOCALE_FROM', {
           locale: matchingSupportedLocale
             ? matchingSupportedLocale.code
-            : 'en-US',
+            : 'pt-BR',
         });
       }
 
@@ -348,12 +348,6 @@ export default {
       );
 
       commitPropertySetting('SET_CHANNELS', 'channels', 'channels');
-
-      commitPropertySetting(
-        'SET_DONATION_DATE',
-        'donationDate',
-        'donationDate'
-      );
 
       (get(settings, 'exp') || []).forEach((experiment) => {
         commit('ADD_EXPERIMENT', {
