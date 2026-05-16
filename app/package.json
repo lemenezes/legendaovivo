@@ -101,5 +101,8 @@
     "uuid": "^8.2.0",
     "vue-native-websocket": "^2.0.12",
     "whatwg-fetch": "^2.0.4"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
