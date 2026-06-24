@@ -152,7 +152,7 @@ dropboxRoute.get('/transcripts', async (req, res, next) => {
           cursor,
         });
       }
-    } catch ({ e }) {
+    } catch (error) {
       res.status(400).send(
         JSON.stringify({
           error,

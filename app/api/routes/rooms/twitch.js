@@ -8,6 +8,10 @@ async function getTwitchToken() {
     return twitchAccessToken;
   }
 
+  if (!process.env.TWITCH_APP_CLIENT_ID || !process.env.TWITCH_APP_CLIENT_SECRET) {
+    throw new Error('Missing Twitch API credentials');
+  }
+
   try {
     // console.log('Getting new Twitch token');
 
@@ -33,7 +37,7 @@ async function getTwitchToken() {
     return twitchAccessToken;
   } catch (error) {
     // console.log('Unable to get Twitch token: ' + (error && error.response && error.response.data ? JSON.stringify(error.response.data) : null));
-    throw e;
+    throw error;
   }
 }
 

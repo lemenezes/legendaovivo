@@ -9,6 +9,8 @@ import wwwRedirectMiddleware from './server/middleware/wwwRedirect.js';
 import wsServer from './socket.io/server';
 // import redirectRules from './redirects';
 
+const isVercelServerless = process.env.VERCEL === '1';
+
 module.exports = {
   head: {
     title: 'Web Captioner',
@@ -244,13 +246,33 @@ module.exports = {
         config.devtool = '#source-map';
       }
 
+      if (isClient && !isDev) {
+        // Keep build output clean on Nuxt 2/Webpack 4 without changing app logic.
+        config.performance = {
+          hints: false,
+        };
+      }
+
       if (process.server) {
       }
     },
   },
   hooks(hook) {
     hook('listen', (server) => {
-      wsServer.createSocket(server);
+      // Vercel serverless does not support long-lived WebSocket servers.
+      if (isVercelServerless || process.env.DISABLE_WS_SERVER === 'true') {
+        return;
+      }
+
+      if (!server) {
+        return;
+      }
+
+      try {
+        wsServer.createSocket(server);
+      } catch (error) {
+        console.error('Could not initialize WebSocket server:', error);
+      }
     }),
       hook('modules:before', (nuxt) => {
         // https://github.com/nuxt/nuxt.js/pull/6026#issuecomment-519030254

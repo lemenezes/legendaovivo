@@ -1,6 +1,21 @@
 const docs = require('express').Router();
 const helpscout = require('./helpscout');
 
+const hasHelpscoutConfig =
+  Boolean(process.env.HELPSCOUT_DOCS_API_KEY) &&
+  Boolean(process.env.HELPSCOUT_DOCS_COLLECTION_ID);
+
+const safeAsync = (handler) => async (req, res, next) => {
+  try {
+    await handler(req, res, next);
+  } catch (error) {
+    console.error('Docs API error:', error);
+    if (!res.headersSent) {
+      res.sendStatus(503);
+    }
+  }
+};
+
 let viewCounts = {};
 
 const logViewCount = (articleId) => {
@@ -19,11 +34,15 @@ const logViewCount = (articleId) => {
   }
 };
 
-docs.get('/categories/:categorySlug', async (req, res) => {
+docs.get('/categories/:categorySlug', safeAsync(async (req, res) => {
   let { categorySlug } = req.params;
 
   if (!categorySlug) {
     return res.sendStatus(422);
+  }
+
+  if (!hasHelpscoutConfig) {
+    return res.sendStatus(404);
   }
 
   let category = await helpscout.category({ categorySlug });
@@ -31,13 +50,17 @@ docs.get('/categories/:categorySlug', async (req, res) => {
     maxAge: 60 * 5,
   };
   return category ? res.send(category) : res.sendStatus(404);
-});
+}));
 
-docs.get('/categories/:categorySlug/articles', async (req, res) => {
+docs.get('/categories/:categorySlug/articles', safeAsync(async (req, res) => {
   let { categorySlug } = req.params;
 
   if (!categorySlug) {
     return res.sendStatus(422);
+  }
+
+  if (!hasHelpscoutConfig) {
+    return res.send([]);
   }
 
   let articles = await helpscout.articlesForCategory({ categorySlug });
@@ -45,16 +68,20 @@ docs.get('/categories/:categorySlug/articles', async (req, res) => {
   res.cacheControl = {
     maxAge: 60 * 5,
   };
-  res.send(articles);
-});
+  res.send(articles || []);
+}));
 
 docs.get(
   '/categories/:categorySlug/articles/:articleSlug',
-  async (req, res) => {
+  safeAsync(async (req, res) => {
     let { categorySlug, articleSlug } = req.params;
 
     if (!categorySlug && !articleSlug) {
       return res.sendStatus(422);
+    }
+
+    if (!hasHelpscoutConfig) {
+      return res.sendStatus(404);
     }
 
     try {
@@ -71,20 +98,25 @@ docs.get(
     } catch (e) {
       return res.sendStatus(404);
     }
-  }
+  })
 );
 
-docs.get('/articles', async (req, res) => {
+docs.get('/articles', safeAsync(async (req, res) => {
   let { query } = req.query;
 
   if (!query) {
     return res.sendStatus(422);
   }
+
+  if (!hasHelpscoutConfig) {
+    return res.send([]);
+  }
+
   let articles = await helpscout.search({ query });
   res.cacheControl = {
     maxAge: 60 * 5,
   };
-  res.send(articles);
-});
+  res.send(articles || []);
+}));
 
 module.exports = docs;

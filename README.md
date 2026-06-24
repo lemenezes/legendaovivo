@@ -61,6 +61,12 @@ To run the Nuxt.js development server:
    1. Click "Enable" next to the text box.
    1. Save and relaunch the browser.
 
+### Known build warnings
+
+- `DEP0040: punycode` may appear during `npm run build` on recent Node.js versions.
+- This warning comes from legacy transitive dependencies used by Nuxt 2 / Webpack 4 and does not indicate an immediate runtime failure in this project.
+- For now, this repository intentionally does not apply aggressive dependency overrides just to silence that warning.
+
 ### Docker
 
 For those that are interested, there is an older [Dockerfile](Dockerfile) (not used in more recent [iterations of Web Captioner](#development-history)) that could be used as a starting point for a more robust Dockerfile.

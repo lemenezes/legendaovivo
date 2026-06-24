@@ -1,9 +1,18 @@
 const fonts = require('express').Router();
 let fontsList = require('./fontsList');
 
+const safeAsync = (handler) => async (req, res, next) => {
+  try {
+    await handler(req, res, next);
+  } catch (error) {
+    console.error('Fonts API error:', error);
+    res.sendStatus(503);
+  }
+};
 
 
-fonts.get('/', async (req, res, next) => {
+
+fonts.get('/', safeAsync(async (req, res, next) => {
   let fonts = await fontsList.getFonts();
   if (typeof req.query.popular !== 'undefined') {
     const popularFonts = fonts.slice(0, 25) // get first X results. They're already sorted by popularity.
@@ -33,9 +42,9 @@ fonts.get('/', async (req, res, next) => {
     res.send([]);
   }
 
-});
+}));
 
-fonts.get('/:fontFamily', async (req, res, next) => {
+fonts.get('/:fontFamily', safeAsync(async (req, res, next) => {
   let fonts = await fontsList.getFonts();
   if (!req.params.fontFamily) {
     res.send(422);
@@ -55,7 +64,7 @@ fonts.get('/:fontFamily', async (req, res, next) => {
   } else {
     res.sendStatus(404);
   }
-});
+}));
 
 
 module.exports = fonts;
