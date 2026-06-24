@@ -72,6 +72,9 @@ module.exports = {
     ],
   },
   css: ['@/assets/scss/app.scss'],
+  env: {
+    DISABLE_WS_CLIENT: process.env.DISABLE_WS_CLIENT || 'false',
+  },
   modules: [
     [
       'nuxt-env',

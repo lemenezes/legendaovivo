@@ -4,6 +4,10 @@ import VueNativeWebsocket from 'vue-native-websocket'
 let delayedEventCleanupInterval;
 
 export default ({ store }, inject) => {
+  if (process.env.DISABLE_WS_CLIENT === 'true') {
+    return;
+  }
+
   Vue.use(VueNativeWebsocket, window.location.protocol.replace('http','ws') + '//' + window.location.host, {
     store,
     format: 'json',
