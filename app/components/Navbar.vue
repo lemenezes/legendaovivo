@@ -41,7 +41,10 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-brand mr-auto d-flex align-items-center" :class="{ 'mt-3': largerLayout }">
+        <div
+          class="navbar-brand mr-auto d-flex align-items-center"
+          :class="{ 'mt-3': largerLayout }"
+        >
           <a href="/" class="d-flex align-items-center">
             <img
               src="/logo-solid-bg.svg"
@@ -58,7 +61,7 @@
             <b-badge
               variant="secondary"
               class="ml-2"
-              style="font-size: 0.65rem; font-weight: 600; cursor: pointer;"
+              style="font-size: 0.65rem; font-weight: 600; cursor: pointer"
             >
               {{ localeCode }}
             </b-badge>
@@ -73,7 +76,7 @@
         <div
           v-if="waitingForInitialTranscript"
           class="navbar-text small text-primary mr-3"
-          style="padding-top: 0.75rem;"
+          style="padding-top: 0.75rem"
         >
           <b-spinner small type="grow" />
           <strong>{{ $t('navbar.captioner.listening') }}</strong>
@@ -81,6 +84,7 @@
             <span v-if="microphoneName">&middot; {{ microphoneName }}</span>
           </transition>
         </div>
+        <pip-caption class="mr-2"></pip-caption>
         <cast-button></cast-button>
         <transition name="fade">
           <share-button v-if="experiments.includes('share')"></share-button>
@@ -117,11 +121,9 @@
               hideAllTooltips();
               $store.commit('SET_CHANNEL_ERRORS_SEEN');
             "
-            :title="
-              `Channels ${
-                $store.state.channels.unseenErrorExists ? '(Error)' : ''
-              }`
-            "
+            :title="`Channels ${
+              $store.state.channels.unseenErrorExists ? '(Error)' : ''
+            }`"
             id="navbar-channels-button"
             class="px-2"
           >
@@ -184,7 +186,7 @@
           v-b-tooltip.top
           :title="showSettingsMenu ? ' ' : $t('navbar.menu.settings')"
           class="ml-2 text-white px-2 profile-button"
-          style="position: relative;"
+          style="position: relative"
           variant="info"
         >
           <!-- If there's a photo URL, show it on top of the fallback user-circle button -->
@@ -229,6 +231,7 @@
 <script>
 import VolumeMeter from './VolumeMeter.vue';
 import CastButton from '../components/CastButton.vue';
+import PipCaption from './PipCaption.vue';
 import ShareButton from '../components/ShareButton.vue';
 import SettingsPopup from '../components/SettingsPopup.vue';
 import ChannelsPopup from '~/components/channels/ChannelsPopup';
@@ -240,53 +243,54 @@ export default {
   mixins: [saveToFile, dateFormat],
   components: {
     VolumeMeter,
+    PipCaption,
     CastButton,
     SettingsPopup,
     ShareButton,
     ChannelsPopup,
   },
-  data: function() {
+  data: function () {
     return {
       showSettingsMenu: false,
       showChannelsMenu: false,
     };
   },
   computed: {
-    captioningOn: function() {
+    captioningOn: function () {
       return this.$store.state.captioner.shouldBeOn;
     },
-    typingModeOn: function() {
+    typingModeOn: function () {
       return this.$store.state.captioner.typingModeOn;
     },
-    microphoneName: function() {
+    microphoneName: function () {
       return this.$store.state.captioner.microphoneName;
     },
-    transcriptExcerpt: function() {
+    transcriptExcerpt: function () {
       return (
         this.$store.state.captioner.transcript.final +
         ' ' +
         this.$store.state.captioner.transcript.interim
       ).slice(-60);
     },
-    showCaptioningPreviewPopover: function() {
+    showCaptioningPreviewPopover: function () {
       return this.transcriptExcerpt.length > 0;
     },
-    waitingForInitialTranscript: function() {
+    waitingForInitialTranscript: function () {
       return this.$store.state.captioner.transcript.waitingForInitial;
     },
-    largerLayout: function() {
+    largerLayout: function () {
       return this.$store.state.settings.controls.layout.larger;
     },
-    experiments: function() {
+    experiments: function () {
       return this.$store.state.settings.exp;
     },
-    captioningToggleButtonVariant: function() {
+    captioningToggleButtonVariant: function () {
       return !this.captioningOn ? 'primary' : 'danger';
     },
-    incompatibleBrowser: function() {
+    incompatibleBrowser: function () {
       return this.$store.state.incompatibleBrowser;
     },
-    remoteDisplays: function() {
+    remoteDisplays: function () {
       return this.$store.state.remoteDisplays;
     },
     activeChannels() {
@@ -297,47 +301,47 @@ export default {
     localeCode() {
       const locale = this.$store.state.settings.locale.from;
       if (!locale) return 'English (United States)';
-      
-      const localeData = locales.find(l => l.code === locale);
+
+      const localeData = locales.find((l) => l.code === locale);
       return localeData ? localeData.nameEnglish : locale;
     },
   },
   watch: {
-    showSettingsMenu: function() {
+    showSettingsMenu: function () {
       this.hideAllTooltips();
     },
   },
   methods: {
-    hideAllTooltips: function() {
+    hideAllTooltips: function () {
       this.$root.$emit('bv::hide::tooltip');
     },
-    captioningToggleButtonClick: function() {
+    captioningToggleButtonClick: function () {
       if (this.captioningOn) {
         this.stopCaptioning();
       } else {
         this.startCaptioning();
       }
     },
-    startCaptioning: function() {
+    startCaptioning: function () {
       this.$store.dispatch('captioner/startManual');
       this.$router.push('/captioner');
     },
-    stopCaptioning: function() {
+    stopCaptioning: function () {
       this.$store.dispatch('captioner/stopManual');
     },
-    startTypingMode: function() {
+    startTypingMode: function () {
       this.$store.dispatch('captioner/startTypingMode');
     },
-    stopTypingMode: function() {
+    stopTypingMode: function () {
       this.$store.dispatch('captioner/stopTypingMode');
     },
-    startSaveToFileModal: function() {
+    startSaveToFileModal: function () {
       this.$router.push('/captioner/save-to-file');
     },
-    startClearTranscriptModal: function() {
+    startClearTranscriptModal: function () {
       this.$router.push('/captioner/clear');
     },
-    clearTranscript: function() {
+    clearTranscript: function () {
       if (this.captioningOn) {
         this.$store.dispatch('captioner/restart');
       }
