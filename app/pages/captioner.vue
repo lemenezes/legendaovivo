@@ -13,14 +13,12 @@
       title="Signed in"
       variant="info"
       v-model="$store.state.visibleToasts.signedIn"
-      >You are signed in!</b-toast
-    >
+    >You are signed in!</b-toast>
     <b-toast
       title="Signed out"
       variant="info"
       v-model="$store.state.visibleToasts.signedOut"
-      >You have signed out.</b-toast
-    >
+    >You have signed out.</b-toast>
     <navbar></navbar>
   </div>
 </template>
@@ -53,14 +51,14 @@ export default {
     BToast,
     BToaster,
   },
-  data: function () {
+  data: function() {
     return {
       combokeysDocument: null,
       shouldWatchIfSignedIn: true,
       startedSettingsWatcher: false,
     };
   },
-  mounted: function () {
+  mounted: function() {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
     window.firebase = this.$firebase;
@@ -163,7 +161,7 @@ export default {
                 this.$store.state.captioner.transcript.final +
                 this.$store.state.captioner.transcript.interim,
               dateFormatter: this.dateFormat,
-              onDone: function () {},
+              onDone: function() {},
             });
           }
         })
@@ -335,10 +333,10 @@ export default {
     );
   },
   watch: {
-    socketConnected: function () {
+    socketConnected: function() {
       this.initRoom();
     },
-    settingsLoaded: function () {
+    settingsLoaded: function() {
       this.initRoom();
 
       if (this.shouldAutostart()) {
@@ -348,25 +346,25 @@ export default {
     $route(toRoute) {
       this.redirectSettingsRouteOnMobile(toRoute.name);
     },
-    incompatibleBrowserModalVisible: function () {
+    incompatibleBrowserModalVisible: function() {
       if (this.incompatibleBrowserModalVisible) {
         this.$refs.incompatibleBrowserModal.showModal();
       }
     },
-    microphonePermissionNeeded: function () {
+    microphonePermissionNeeded: function() {
       if (this.microphonePermissionNeeded) {
         this.$refs.microphonePermissionNeededModal.showModal();
       } else {
         this.$refs.microphonePermissionNeededModal.hideModal();
       }
     },
-    microphonePermissionDenied: function () {
+    microphonePermissionDenied: function() {
       if (this.microphonePermissionDenied) {
         this.$refs.microphonePermissionNeededModal.hideModal();
         this.$refs.microphonePermissionDeniedModal.showModal();
       }
     },
-    showFirstSignInMessage: function () {
+    showFirstSignInMessage: function() {
       if (this.showFirstSignInMessage) {
         this.$refs.firstSignInModal.showModal();
       } else {
@@ -374,7 +372,7 @@ export default {
       }
     },
     '$store.state.settings.appearance': {
-      handler: function (appearance) {
+      handler: function(appearance) {
         if (this.$store.state.settings.share.roomId) {
           let socketWaitConnectionInterval = setInterval(() => {
             if (this.$store.state.socket.isConnected) {
@@ -402,30 +400,25 @@ export default {
     },
     '$store.state.user.signedIn'() {
       if (this.$store.state.user.signedIn && this.$store.state.user.email) {
-        console.log(
-          `sentry removed, would have stored ${this.$store.state.user.email}`
-        );
+        console.log(`sentry removed, would have stored ${this.$store.state.user.email}`);
       }
     },
   },
-  handleBeforeUnload(event) {
-    const transcript =
-      this.$store.state.captioner.transcript.final +
-      this.$store.state.captioner.transcript.interim;
+  beforeDestroy: function() {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
 
-    if (transcript.trim().length > 0) {
-      event.preventDefault();
-      event.returnValue = '';
+    if (this.combokeysDocument) {
+      this.combokeysDocument.detach();
     }
   },
   computed: {
-    experiments: function () {
+    experiments: function() {
       return this.$store.state.settings.exp;
     },
-    largerLayout: function () {
+    largerLayout: function() {
       return this.$store.state.settings.controls.layout.larger;
     },
-    captioningOn: function () {
+    captioningOn: function() {
       return this.$store.state.captioner.on;
     },
     typingModeOn() {
@@ -440,54 +433,51 @@ export default {
         100;
       return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + opacity + ')';
     },
-    incompatibleBrowserModalVisible: function () {
+    incompatibleBrowserModalVisible: function() {
       return this.$store.state.incompatibleBrowserModalVisible;
     },
-    transcript: function () {
+    transcript: function() {
       return (
         this.$store.state.captioner.transcript.final +
         ' ' +
         this.$store.state.captioner.transcript.interim
       );
     },
-    captioningShouldBeOn: function () {
+    captioningShouldBeOn: function() {
       return this.$store.state.captioner.shouldBeOn;
     },
-    microphonePermissionNeeded: function () {
+    microphonePermissionNeeded: function() {
       return this.$store.state.captioner.microphonePermission.needed;
     },
-    microphonePermissionDenied: function () {
+    microphonePermissionDenied: function() {
       return this.$store.state.captioner.microphonePermission.denied;
     },
-    showFirstSignInMessage: function () {
+    showFirstSignInMessage: function() {
       return this.$store.state.notifications.showFirstSignInMessage;
     },
-    socketConnected: function () {
+    socketConnected: function() {
       return this.$store.state.socket.isConnected;
     },
-    settingsLoaded: function () {
+    settingsLoaded: function() {
       return this.$store.state.settingsLoaded;
     },
   },
   methods: {
-    startCaptioning: function () {
-      this.$store.dispatch('captioner/startManual');
-    },
-    stopCaptioning: function () {
-      this.$store.dispatch('captioner/stopManual');
-    },
     handleBeforeUnload(event) {
       const transcript =
         this.$store.state.captioner.transcript.final +
         this.$store.state.captioner.transcript.interim;
 
-      const hasUnsavedTranscript =
-        transcript.trim().length > 0 && transcript !== this.lastSavedTranscript;
-
-      if (hasUnsavedTranscript) {
+      if (transcript.trim().length > 0) {
         event.preventDefault();
         event.returnValue = '';
       }
+    },
+    startCaptioning: function() {
+      this.$store.dispatch('captioner/startManual');
+    },
+    stopCaptioning: function() {
+      this.$store.dispatch('captioner/stopManual');
     },
     redirectSettingsRouteOnMobile(currentName) {
       // This is a client-side method because we're
@@ -500,7 +490,7 @@ export default {
         this.$router.replace(this.localePath('captioner-settings-general'));
       }
     },
-    initRoom: function () {
+    initRoom: function() {
       // initRoom gets called multiple times, but it will (should) only continue
       // if both socket is connected and settings are loaded
       if (this.socketConnected && this.settingsLoaded) {
@@ -515,7 +505,7 @@ export default {
         // Can't init room until socket is connected settings are loaded
       }
     },
-    shouldAutostart: function () {
+    shouldAutostart: function() {
       return (
         this.$store.state.settings.alwaysAutostartOnLoad ||
         (this.$route &&
@@ -523,7 +513,7 @@ export default {
           Object.keys(this.$route.query).includes('autostart'))
       );
     },
-    checkAuthStatusAndRestoreSettings: function () {
+    checkAuthStatusAndRestoreSettings: function() {
       this.$store.dispatch('INIT_CHECK_AUTH_STATUS_WATCHER').then((user) => {
         if (user) {
           // They are signed in
@@ -552,7 +542,7 @@ export default {
         }
       );
     },
-    initSettingsWatcher: function () {
+    initSettingsWatcher: function() {
       if (this.startedSettingsWatcher) return; // only run this once
 
       this.startedSettingsWatcher = true;

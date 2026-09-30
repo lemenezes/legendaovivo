@@ -230,6 +230,7 @@
 
 <script>
 import VolumeMeter from './VolumeMeter.vue';
+import PipCaption from './PipCaption.vue';
 import CastButton from '../components/CastButton.vue';
 import PipCaption from './PipCaption.vue';
 import ShareButton from '../components/ShareButton.vue';
