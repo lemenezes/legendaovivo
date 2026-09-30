@@ -17,37 +17,71 @@ echo "======================================"
 echo ""
 
 # --------------------------------------------------
-# NVM
-# --------------------------------------------------
-
-export NVM_DIR="$HOME/.nvm"
-
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-    source "$NVM_DIR/nvm.sh"
-else
-    echo "❌ NVM não foi encontrado."
-    echo ""
-    echo "É necessário fazer a configuração inicial."
-    echo "Peça ajuda ao Leandro."
-    echo ""
-    read -p "Pressione Enter para fechar..."
-    exit 1
-fi
-
-# --------------------------------------------------
-# NODE
+# NODE LOCAL
 # --------------------------------------------------
 
 echo "🔎 Verificando ambiente..."
 
-if ! nvm ls "$NODE_VERSION" 2>/dev/null | grep -q "$NODE_VERSION"; then
-    echo "📦 Instalando Node.js $NODE_VERSION..."
-    nvm install "$NODE_VERSION"
+RUNTIME_DIR="$PROJECT_DIR/.runtime"
+NODE_DIR="$RUNTIME_DIR/node-v$NODE_VERSION"
+
+if [ ! -x "$NODE_DIR/bin/node" ]; then
+    ARCH="$(uname -m)"
+
+    case "$ARCH" in
+        arm64)
+            NODE_ARCH="arm64"
+            ;;
+        x86_64)
+            NODE_ARCH="x64"
+            ;;
+        *)
+            echo "❌ Este Mac usa uma arquitetura não suportada: $ARCH"
+            echo "Peça ajuda ao Leandro."
+            echo ""
+            read -p "Pressione Enter para fechar..."
+            exit 1
+            ;;
+    esac
+
+    NODE_PACKAGE="node-v$NODE_VERSION-darwin-$NODE_ARCH"
+    NODE_URL="https://nodejs.org/dist/v$NODE_VERSION/$NODE_PACKAGE.tar.gz"
+    TEMP_FILE="$RUNTIME_DIR/node.tar.gz"
+
+    echo "📦 Preparando Node.js $NODE_VERSION..."
+    echo "Isso acontece somente na primeira execução."
+    echo ""
+
+    mkdir -p "$RUNTIME_DIR"
+
+    if ! curl -fL "$NODE_URL" -o "$TEMP_FILE"; then
+        echo ""
+        echo "❌ Não foi possível baixar o Node.js."
+        echo "Verifique a conexão com a internet e tente novamente."
+        echo ""
+        read -p "Pressione Enter para fechar..."
+        exit 1
+    fi
+
+    if ! tar -xzf "$TEMP_FILE" -C "$RUNTIME_DIR"; then
+        rm -f "$TEMP_FILE"
+        echo ""
+        echo "❌ Não foi possível preparar o Node.js."
+        echo "Peça ajuda ao Leandro."
+        echo ""
+        read -p "Pressione Enter para fechar..."
+        exit 1
+    fi
+
+    rm -f "$TEMP_FILE"
+    mv "$RUNTIME_DIR/$NODE_PACKAGE" "$NODE_DIR"
+
+    echo "✅ Node.js preparado."
 fi
 
-nvm use "$NODE_VERSION" >/dev/null
+export PATH="$NODE_DIR/bin:$PATH"
 
-echo "✅ Node.js $NODE_VERSION"
+echo "✅ Node.js $(node -v)"
 echo ""
 
 # --------------------------------------------------

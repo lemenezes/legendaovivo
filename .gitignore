@@ -11,3 +11,5 @@ static-site/public
 static-site/node_modules
 static-site/static/build
 .env
+# Runtime local do Legenda ao Vivo
+.runtime/
