@@ -12,6 +12,7 @@
         :aria-label="buttonLabel"
         :aria-pressed="isPipActive"
         @click="togglePip"
+        title="Use este modo para acompanhar a legenda enquanto navega em outra aba ou app."
       >
         <svg
           aria-hidden="true"
@@ -30,9 +31,6 @@
         </svg>
         {{ buttonLabel }}
       </button>
-      <p v-if="isSupported" class="pip-hint">
-        Use este modo para acompanhar a legenda enquanto navega em outra aba ou app.
-      </p>
     </template>
 
     <!-- Canvas e vídeo só montados no cliente (v-if=clientReady) para evitar refs nulos em SSR -->

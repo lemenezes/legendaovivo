@@ -93,22 +93,6 @@
     <hr />
     <b-button-group class="d-flex mb-2">
       <b-button
-        :to="localePath('captioner-save-to-file')"
-        variant="outline-secondary"
-        v-b-tooltip.hover.top
-        title="Save transcript"
-      >
-        <fa icon="save" />
-      </b-button>
-      <b-button
-        variant="outline-secondary"
-        v-b-tooltip.hover.top
-        :title="$t('navbar.menu.newWindow')"
-        @click="$store.dispatch('START_DETACHED_MODE')"
-      >
-        <fa icon="window-restore" />
-      </b-button>
-      <b-button
         variant="outline-danger"
         :to="localePath('captioner-clear')"
         v-b-tooltip.hover.top

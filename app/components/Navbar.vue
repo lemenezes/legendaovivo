@@ -84,6 +84,26 @@
             <span v-if="microphoneName">&middot; {{ microphoneName }}</span>
           </transition>
         </div>
+        <div class="d-flex align-items-center mr-2">
+          <b-button
+            :to="localePath('captioner-save-to-file')"
+            variant="info"
+            v-b-tooltip.top
+            title="Salvar transcrição"
+            class="caption-action-button mr-1"
+          >
+            <fa icon="save" />
+          </b-button>
+          <b-button
+            variant="info"
+            v-b-tooltip.top
+            title="Abrir em nova janela"
+            @click="$store.dispatch('START_DETACHED_MODE')"
+            class="caption-action-button"
+          >
+            <fa icon="window-restore" />
+          </b-button>
+        </div>
         <pip-caption class="mr-2"></pip-caption>
         <cast-button></cast-button>
         <transition name="fade">
@@ -226,13 +246,20 @@
   font-size: 1.5rem;
   line-height: 1.5rem;
 }
+
+.caption-action-button {
+  min-width: 42px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>
 
 <script>
 import VolumeMeter from './VolumeMeter.vue';
 import PipCaption from './PipCaption.vue';
 import CastButton from '../components/CastButton.vue';
-import PipCaption from './PipCaption.vue';
 import ShareButton from '../components/ShareButton.vue';
 import SettingsPopup from '../components/SettingsPopup.vue';
 import ChannelsPopup from '~/components/channels/ChannelsPopup';
